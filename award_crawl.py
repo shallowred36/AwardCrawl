@@ -1,6 +1,27 @@
 import requests
 from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-html_text = requests.get("https://www.marriott.com/default.mi").text
-my_soup = BeautifulSoup(html_text, 'html.parser')
-print(my_soup.prettify())
+chrome_options = Options()
+chrome_options.add_argument("--start-maximized")
+driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=r"C:\Users\yaokuo\Documents\Personal - DO NOT BACKUP\Git\AwardCrawl\chromedriver_win32\chromedriver.exe")
+driver.get("https://www.marriott.com/default.mi")
+"""
+try:
+    loc = WebDriverWait(driver, 20).until(
+            EC.presence_of_element_located((By.NAME, "destinationAddress.destination")))
+except:
+    print("cannot find destination input")
+"""
+driver.implicitly_wait(3)
+input_div = driver.find_element_by_css_selector(".tile-hsearch-homepage.m-homepage-hsearch.l-hsearch-2.l-hsearch-takeover.l-hsearch-cntnr.l-hsearch-bottom")
+prefix = input_div.get_attribute("data-id-prefix")
+loc_input_field_name = prefix + "_search-location"
+#print(loc_input_field_name)
+loc_input_field = driver.find_element_by_id(loc_input_field_name)
+loc_input_field.send_keys("Maldives")
+#driver.quit()
